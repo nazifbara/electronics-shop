@@ -2,8 +2,8 @@ import { Typography } from '@mui/material';
 
 const HomeView = () => {
   return (
-    <Typography variant="h1" component="h1">
-      Electronics Shop
+    <Typography variant="h3" noWrap component="h3">
+      Home View
     </Typography>
   );
 };
