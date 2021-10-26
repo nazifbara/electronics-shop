@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-electronicsshop-dev-152021-authRole",
+      "UnauthRoleArn": "arn:aws:iam::070468362108:role/amplify-electronicsshop-dev-152021-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::070468362108:role/amplify-electronicsshop-dev-152021-authRole",
+      "Region": "eu-west-2",
+      "DeploymentBucketName": "amplify-electronicsshop-dev-152021-deployment",
+      "UnauthRoleName": "amplify-electronicsshop-dev-152021-unauthRole",
+      "StackName": "amplify-electronicsshop-dev-152021",
+      "StackId": "arn:aws:cloudformation:eu-west-2:070468362108:stack/amplify-electronicsshop-dev-152021/de834900-3667-11ec-9eab-06b7b784f3d8",
+      "AmplifyAppId": "d3eqe0nuezj77k"
+    }
+  }
+}
