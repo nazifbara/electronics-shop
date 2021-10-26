@@ -1,5 +1,5 @@
 import { Switch, Route } from 'react-router-dom';
-import { Typography, AppBar, Box, Toolbar } from '@mui/material';
+import { Typography, AppBar, Box, Toolbar, Container } from '@mui/material';
 
 import routes from '../../routes';
 
@@ -15,11 +15,13 @@ function App() {
           </Toolbar>
         </AppBar>
       </Box>
-      <Switch>
-        {routes.map((view) => (
-          <Route {...view.routeProps} key={view.name} />
-        ))}
-      </Switch>
+      <Container maxWidth="md">
+        <Switch>
+          {routes.map((view) => (
+            <Route {...view.routeProps} key={view.name} />
+          ))}
+        </Switch>
+      </Container>
     </>
   );
 }
