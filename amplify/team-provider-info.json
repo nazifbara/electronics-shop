@@ -10,6 +10,11 @@
       "StackName": "amplify-electronicsshop-dev-152021",
       "StackId": "arn:aws:cloudformation:eu-west-2:070468362108:stack/amplify-electronicsshop-dev-152021/de834900-3667-11ec-9eab-06b7b784f3d8",
       "AmplifyAppId": "d3eqe0nuezj77k"
+    },
+    "categories": {
+      "auth": {
+        "electronicsshop8fbca850": {}
+      }
     }
   }
 }
