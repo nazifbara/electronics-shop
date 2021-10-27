@@ -12,6 +12,7 @@ export declare class Category {
   readonly id: string;
   readonly name: string;
   readonly imageKey: string;
+  readonly slug: string;
   readonly createdAt?: string;
   readonly updatedAt?: string;
   constructor(init: ModelInit<Category, CategoryMetaData>);
