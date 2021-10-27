@@ -2,16 +2,29 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
+import Amplify, { AuthModeStrategyType } from 'aws-amplify';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import App from './components/App';
+import AWSConfig from './aws-exports';
+
+Amplify.configure({
+  ...AWSConfig,
+  DataStore: {
+    authModeStrategyType: AuthModeStrategyType.MULTI_AUTH,
+  },
+});
+const queryClient = new QueryClient();
 
 const Root = () => {
   return (
     <>
       <CssBaseline />
-      <Router>
-        <App />
-      </Router>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <App />
+        </Router>
+      </QueryClientProvider>
     </>
   );
 };
