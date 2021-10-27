@@ -5,6 +5,7 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
+  CircularProgress,
 } from '@mui/material';
 
 import { useCategories } from '../../hooks/queries';
@@ -12,9 +13,7 @@ import { useCategories } from '../../hooks/queries';
 import ContentBox from '../../components/ContentBox';
 
 const HomeView = () => {
-  const { isSuccess, data: categories } = useCategories();
-
-  console.log(categories);
+  const { isSuccess, isLoading, data: categories } = useCategories();
 
   return (
     <ContentBox>
@@ -23,6 +22,8 @@ const HomeView = () => {
       </Typography>
       <ContentBox sx={{ pt: 4, pb: 4 }}>
         <Grid container spacing={2}>
+          {isLoading && <CircularProgress />}
+
           {isSuccess &&
             categories.map((category) => (
               <Grid key={category.name} item xs={6} sm={4} md={3}>
