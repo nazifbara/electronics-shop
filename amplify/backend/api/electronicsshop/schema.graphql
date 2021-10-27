@@ -1,7 +1,17 @@
+type Product @model @auth(rules: [{allow: public}]) @key(name: "byCategory", fields: ["categoryID"]) {
+  id: ID!
+  name: String
+  price: Int
+  description: String
+  imageKey: [String!]
+  categoryID: ID
+}
+
 type Category @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String!
   imageKey: String!
   slug: String!
+  Products: [Product] @connection(keyName: "byCategory", fields: ["id"])
 }
  
