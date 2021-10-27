@@ -2,6 +2,7 @@ import { Switch, Route } from 'react-router-dom';
 import { Typography, AppBar, Box, Toolbar, Container } from '@mui/material';
 
 import routes from '../../routes';
+import { Link } from '../../components';
 
 function App() {
   return (
@@ -10,7 +11,9 @@ function App() {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" noWrap component="div">
-              Electronics Shop
+              <Link to="/" color="inherit" underline="none">
+                Electronics Shop
+              </Link>
             </Typography>
           </Toolbar>
         </AppBar>
@@ -18,7 +21,7 @@ function App() {
       <Container maxWidth="md">
         <Switch>
           {routes.map((view) => (
-            <Route {...view.routeProps} key={view.name} />
+            <Route {...view.routeProps} exact key={view.name} />
           ))}
         </Switch>
       </Container>

@@ -11,7 +11,7 @@ import {
 
 import { useCategories } from '../../hooks/queries';
 
-import { ContentBox } from '../../components';
+import { ContentBox, Link } from '../../components';
 
 const HomeView = () => {
   const { isSuccess, isLoading, isError, data: categories } = useCategories();
@@ -21,7 +21,7 @@ const HomeView = () => {
       <Typography variant="h4" component="h3">
         Shop By Catagory
       </Typography>
-      <ContentBox sx={{ pt: 4, pb: 4 }}>
+      <ContentBox>
         {isError && (
           <Alert severity="error">
             <Typography variant="body1" component="span">
@@ -37,7 +37,7 @@ const HomeView = () => {
             categories.map((category) => (
               <Grid key={category.name} item xs={6} sm={4} md={3}>
                 <CardActionArea>
-                  <a href="/#">
+                  <Link to={`/category/${category.slug}/${category.id}`}>
                     <Card>
                       <CardMedia
                         component="img"
@@ -50,7 +50,7 @@ const HomeView = () => {
                         </Typography>
                       </CardContent>
                     </Card>
-                  </a>
+                  </Link>
                 </CardActionArea>
               </Grid>
             ))}
