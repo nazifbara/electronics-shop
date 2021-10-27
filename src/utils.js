@@ -6,12 +6,8 @@ export const getSignedItems = async (
   resultKey = 'fileUrl'
 ) => {
   const signedUrls = await Promise.all(
-    items.map((item) => {
-      console.log(item[itemKey]);
-      return Storage.get(item[itemKey]);
-    })
+    items.map((item) => Storage.get(item[itemKey]))
   );
-  console.log(signedUrls);
   const signedItems = signedUrls.map((url, index) => ({
     ...items[index],
     [resultKey]: url,
