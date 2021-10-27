@@ -10,7 +10,7 @@ import {
 
 import { useCategories } from '../../hooks/queries';
 
-import ContentBox from '../../components/ContentBox';
+import { ContentBox } from '../../components';
 
 const HomeView = () => {
   const { isSuccess, isLoading, data: categories } = useCategories();

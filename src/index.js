@@ -5,7 +5,7 @@ import { CssBaseline } from '@mui/material';
 import Amplify, { AuthModeStrategyType } from 'aws-amplify';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import App from './components/App';
+import { App } from './components';
 import AWSConfig from './aws-exports';
 
 Amplify.configure({
