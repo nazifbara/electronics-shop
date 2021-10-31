@@ -3,7 +3,9 @@ import { DataStore } from '@aws-amplify/datastore';
 import { Product, Category } from '../../models';
 import { getSignedItems } from '../../utils';
 
-const fetchProducts = async ({ categoryID }) => {
+export const fetchCategories = async () => await DataStore.query(Category);
+
+export const fetchProducts = async ({ categoryID }) => {
   let products = await DataStore.query(Product);
   products = await getSignedItems(products, 'imageKey', 'imageUrl');
 
@@ -17,4 +19,4 @@ const fetchProducts = async ({ categoryID }) => {
   return products;
 };
 
-export default fetchProducts;
+export default fetchCategories;

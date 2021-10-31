@@ -1,9 +1,9 @@
 import { useQuery } from 'react-query';
 
-import { fetchCategories } from '../../api/queries';
+import { fetchCategories, fetchProducts } from '../../api/queries';
 import { getSignedItems } from '../../utils';
 
-const useCategories = () =>
+export const useCategories = () =>
   useQuery('categories', async () => {
     const unsignedCategories = await fetchCategories();
     const signedCategories = await getSignedItems(
@@ -15,4 +15,8 @@ const useCategories = () =>
     return signedCategories;
   });
 
-export default useCategories;
+export const useProducts = (criteria) =>
+  useQuery(
+    'products' + (criteria ? JSON.stringify(criteria) : ''),
+    async () => await fetchProducts(criteria)
+  );
