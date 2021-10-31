@@ -1,7 +1,7 @@
 import { DataStore } from '@aws-amplify/datastore';
 
-import { Product, Category } from '../../models';
-import { getSignedItems } from '../../utils';
+import { Product, Category } from '../models';
+import { getSignedItems } from '../utils';
 
 export const fetchCategories = async () => await DataStore.query(Category);
 
