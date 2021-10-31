@@ -14,7 +14,14 @@ export const schema = {
                     "name": "name",
                     "isArray": false,
                     "type": "String",
-                    "isRequired": false,
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "description": {
+                    "name": "description",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
                     "attributes": []
                 },
                 "price": {
@@ -24,20 +31,12 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "description": {
-                    "name": "description",
+                "imageKey": {
+                    "name": "imageKey",
                     "isArray": false,
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
-                },
-                "imageKey": {
-                    "name": "imageKey",
-                    "isArray": true,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": [],
-                    "isArrayNullable": true
                 },
                 "categoryID": {
                     "name": "categoryID",
@@ -114,15 +113,15 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "imageKey": {
-                    "name": "imageKey",
+                "slug": {
+                    "name": "slug",
                     "isArray": false,
                     "type": "String",
                     "isRequired": true,
                     "attributes": []
                 },
-                "slug": {
-                    "name": "slug",
+                "imageKey": {
+                    "name": "imageKey",
                     "isArray": false,
                     "type": "String",
                     "isRequired": true,
@@ -187,5 +186,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "abeac11a9a78baa1fee4e513bca45ece"
+    "version": "7298659bb8fbd66d5d603d0805f63554"
 };

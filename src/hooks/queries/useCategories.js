@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { fetchCategories } from '../../api/queries';
 import { getSignedItems } from '../../utils';
 
-const useCategory = () =>
+const useCategories = () =>
   useQuery('categories', async () => {
     const unsignedCategories = await fetchCategories();
     const signedCategories = await getSignedItems(
@@ -15,4 +15,4 @@ const useCategory = () =>
     return signedCategories;
   });
 
-export default useCategory;
+export default useCategories;

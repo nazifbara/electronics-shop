@@ -14,10 +14,10 @@ type CategoryMetaData = {
 
 export declare class Product {
   readonly id: string;
-  readonly name?: string;
+  readonly name: string;
+  readonly description: string;
   readonly price?: number;
-  readonly description?: string;
-  readonly imageKey?: string[];
+  readonly imageKey?: string;
   readonly categoryID?: string;
   readonly createdAt?: string;
   readonly updatedAt?: string;
@@ -28,8 +28,8 @@ export declare class Product {
 export declare class Category {
   readonly id: string;
   readonly name: string;
-  readonly imageKey: string;
   readonly slug: string;
+  readonly imageKey: string;
   readonly Products?: (Product | null)[];
   readonly createdAt?: string;
   readonly updatedAt?: string;

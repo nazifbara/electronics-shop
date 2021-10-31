@@ -1,4 +1,5 @@
 import { Storage } from 'aws-amplify';
+import Dinero from 'dinero.js';
 
 export const getSignedItems = async (
   items,
@@ -14,4 +15,14 @@ export const getSignedItems = async (
   }));
 
   return signedItems;
+};
+
+export const formatPrice = (price) => {
+  const p = Dinero({ amount: price });
+
+  if (p.hasSubUnits()) {
+    return p.toFormat('$0,0.00');
+  }
+
+  return Dinero({ amount: price }).toFormat('$0,0');
 };

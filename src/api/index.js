@@ -1,6 +1,6 @@
-import { fetchCategories } from './queries';
+import { fetchCategories, fetchProducts } from './queries';
 
-export const queries = { fetchCategories };
+export const queries = { fetchCategories, fetchProducts };
 
 const api = {
   queries,
