@@ -1,11 +1,14 @@
 import {
   Card,
   CardContent,
+  CardActions,
   Typography,
   Box,
   useMediaQuery,
   useTheme,
+  IconButton,
 } from '@mui/material';
+import { FavoriteBorder } from '@mui/icons-material';
 
 import { Link } from '..';
 import { formatPrice } from '../../utils';
@@ -58,6 +61,11 @@ const ProductCard = ({ product, ...otherProps }) => {
           <Typography variant="h5" component="p" sx={{ fontWeight: 'bold' }}>
             {formatPrice(product.price)}
           </Typography>
+          <CardActions>
+            <IconButton size="large">
+              <FavoriteBorder fontSize="large" />
+            </IconButton>
+          </CardActions>
         </CardContent>
       </Box>
     </Card>
