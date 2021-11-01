@@ -12,6 +12,7 @@ import { FavoriteBorder } from '@mui/icons-material';
 
 import { Link } from '..';
 import { formatPrice } from '../../utils';
+import { ImageBox } from '..';
 
 const ProductCard = ({ product, ...otherProps }) => {
   const theme = useTheme();
@@ -27,31 +28,16 @@ const ProductCard = ({ product, ...otherProps }) => {
           }
         }
       >
-        <Box
+        <ImageBox
           sx={{
             flex: 3,
-            height: '218px',
-            width: '100%',
-            position: 'relative',
+            height: 218,
           }}
         >
           <Link to={`/product/${product.id}`}>
-            <img
-              style={{
-                position: 'absolute',
-                margin: 'auto',
-                top: '0',
-                bottom: '0',
-                left: '0',
-                right: '0',
-                maxWidth: '100%',
-                maxHeight: '100%',
-              }}
-              src={product.imageUrl}
-              alt={product.name}
-            />
+            <img src={product.imageUrl} alt={product.name} />
           </Link>
-        </Box>
+        </ImageBox>
         <CardContent sx={{ flex: mdMedia ? 7 : 1 }}>
           <Link to={`/product/${product.id}`}>
             <Typography gutterBottom variant="body1" component="p">

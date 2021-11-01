@@ -15,7 +15,7 @@ import {
 import { FavoriteBorder } from '@mui/icons-material';
 
 import { useProduct } from '../../hooks/queries';
-import { ContentBox } from '../../components';
+import { ContentBox, ImageBox } from '../../components';
 import { formatPrice } from '../../utils';
 
 const ProductView = () => {
@@ -57,29 +57,14 @@ const ProductView = () => {
               {product.name}
             </Typography>
           )}
-          <Box
+          <ImageBox
             sx={{
               height: mdMedia ? 500 : 300,
               flex: mdMedia ? 1 : null,
-              width: '100%',
-              position: 'relative',
             }}
           >
-            <img
-              style={{
-                position: 'absolute',
-                margin: 'auto',
-                top: '0',
-                bottom: '0',
-                left: '0',
-                right: '0',
-                maxWidth: '100%',
-                maxHeight: '100%',
-              }}
-              src={product.imageUrl}
-              alt={product.name}
-            />
-          </Box>
+            <img src={product.imageUrl} alt={product.name} />
+          </ImageBox>
           <Box sx={{ flex: 1 }}>
             {mdMedia && (
               <Typography gutterBottom variant="h4" component="h3">
