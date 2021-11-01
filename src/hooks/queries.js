@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 
-import { fetchCategories, fetchProducts } from '../api/queries';
+import { fetchCategories, fetchProducts, fetchProduct } from '../api/queries';
 import { getSignedItems } from '../utils';
 
 export const useCategories = () =>
@@ -14,6 +14,9 @@ export const useCategories = () =>
 
     return signedCategories;
   });
+
+export const useProduct = (id) =>
+  useQuery(`product-${id}`, async () => await fetchProduct(id));
 
 export const useProducts = (criteria) =>
   useQuery(

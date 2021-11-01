@@ -5,6 +5,11 @@ import { getSignedItems } from '../utils';
 
 export const fetchCategories = async () => await DataStore.query(Category);
 
+export const fetchProduct = async (id) => {
+  let product = await DataStore.query(Product, id);
+  return (await getSignedItems([product], 'imageKey', 'imageUrl'))[0];
+};
+
 export const fetchProducts = async ({ categoryID }) => {
   let products = await DataStore.query(Product);
   products = await getSignedItems(products, 'imageKey', 'imageUrl');
