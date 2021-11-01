@@ -6,6 +6,7 @@ import Amplify, { AuthModeStrategyType } from 'aws-amplify';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { App } from './components';
+import { CartProvider } from './hooks/useCart';
 import AWSConfig from './aws-exports';
 
 Amplify.configure({
@@ -22,7 +23,9 @@ const Root = () => {
       <CssBaseline />
       <QueryClientProvider client={queryClient}>
         <Router>
-          <App />
+          <CartProvider>
+            <App />
+          </CartProvider>
         </Router>
       </QueryClientProvider>
     </>

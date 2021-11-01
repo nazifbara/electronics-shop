@@ -15,6 +15,7 @@ import {
 import { FavoriteBorder } from '@mui/icons-material';
 
 import { useProduct } from '../../hooks/queries';
+import { useCart } from '../../hooks/useCart';
 import { ContentBox, ImageBox } from '../../components';
 import { formatPrice } from '../../utils';
 
@@ -29,10 +30,13 @@ const ProductView = () => {
   } = useProduct(productID);
   const theme = useTheme();
   const mdMedia = useMediaQuery(theme.breakpoints.up('md'));
+  const { cartProducts, isInCart, addToCart, removeFromCart } = useCart();
+
+  console.log(cartProducts);
 
   const handleQtyChange = (e) => {
     const qty = Number(e.target.value);
-    if (qty <= 1) {
+    if (qty < 1) {
       return;
     }
     setQuantity(qty);
@@ -100,9 +104,25 @@ const ProductView = () => {
                 label="Quantity"
                 type="number"
               />
-              <Button variant="contained" size="medium">
-                Add To Cart
-              </Button>
+              {isInCart(product) ? (
+                <Button
+                  variant="contained"
+                  size="medium"
+                  color="error"
+                  onClick={() => removeFromCart(product)}
+                >
+                  remove from cart
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  size="medium"
+                  onClick={() => addToCart(product, quantity)}
+                >
+                  add to cart
+                </Button>
+              )}
+
               <IconButton size={mdMedia ? 'medium' : 'large'}>
                 <FavoriteBorder fontSize={mdMedia ? 'medium' : 'large'} />
               </IconButton>
