@@ -14,12 +14,10 @@ import { Delete, ShoppingCart } from '@mui/icons-material';
 
 import { useCart } from '../../hooks/useCart';
 import { ImageBox } from '../../components';
-import { getSignedItems } from '../../utils';
 
 function App() {
-  const { cartProducts } = useCart();
+  const { cartProducts, handleQtyChange, refreshImagesUrls } = useCart();
   const [state, setState] = useState({
-    signedItems: [],
     showCart: false,
     signing: true,
   });
@@ -28,8 +26,8 @@ function App() {
     if (!showCart) {
       setState((s) => ({ ...s, signing: true, showCart }));
     }
-    getSignedItems(cartProducts, 'imageKey', 'imageUrl').then((signedItems) => {
-      setState((s) => ({ ...s, signing: false, showCart, signedItems }));
+    refreshImagesUrls().then(() => {
+      setState((s) => ({ ...s, signing: false, showCart }));
     });
   };
 
@@ -55,9 +53,9 @@ function App() {
 
           {state.signing && <CircularProgress />}
 
-          {state.signedItems.map((i) => (
+          {cartProducts.map((p) => (
             <ListItem
-              key={`cart-item-${i.id}`}
+              key={`cart-item-${p.id}`}
               secondaryAction={
                 <IconButton color="error" edge="end" aria-label="delete">
                   <Delete fontSize="medium" />
@@ -65,13 +63,14 @@ function App() {
               }
             >
               <ImageBox sx={{ height: 100, width: 100, mr: 2 }}>
-                <img src={i.imageUrl} alt={i.name} />
+                <img src={p.imageUrl} alt={p.name} />
               </ImageBox>
               <ListItemText
-                primary={i.name}
+                primary={p.name}
                 secondary={
                   <TextField
-                    value={i.quantity}
+                    onChange={handleQtyChange(p)}
+                    value={p.quantity}
                     margin="normal"
                     size="small"
                     label="Qty"
