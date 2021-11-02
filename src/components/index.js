@@ -3,3 +3,4 @@ export { default as ContentBox } from './ContentBox';
 export { default as Link } from './Link';
 export { default as ProductCard } from './ProductCart';
 export { default as ImageBox } from './ImageBox';
+export { default as CartButton } from './CartButton';
