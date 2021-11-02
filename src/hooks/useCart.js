@@ -35,7 +35,7 @@ export const CartProvider = (props) => {
   };
 
   const removeFromCart = (product) => {
-    const productIndex = findProduct(product);
+    const productIndex = findProductIndex(product);
     setCartProducts((s) => [
       ...s.slice(0, productIndex),
       ...s.slice(productIndex + 1),

@@ -16,7 +16,8 @@ import { useCart } from '../../hooks/useCart';
 import { ImageBox } from '../../components';
 
 function App() {
-  const { cartProducts, handleQtyChange, refreshImagesUrls } = useCart();
+  const { cartProducts, handleQtyChange, refreshImagesUrls, removeFromCart } =
+    useCart();
   const [state, setState] = useState({
     showCart: false,
     signing: true,
@@ -57,7 +58,12 @@ function App() {
             <ListItem
               key={`cart-item-${p.id}`}
               secondaryAction={
-                <IconButton color="error" edge="end" aria-label="delete">
+                <IconButton
+                  color="error"
+                  edge="end"
+                  aria-label="delete"
+                  onClick={() => removeFromCart(p)}
+                >
                   <Delete fontSize="medium" />
                 </IconButton>
               }
