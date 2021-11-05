@@ -14,10 +14,17 @@ import { Delete, ShoppingCart } from '@mui/icons-material';
 
 import { useCart } from '../../hooks/useCart';
 import { ImageBox } from '../../components';
+import { formatPrice } from '../../utils';
+import { Box } from '@mui/system';
 
 function App() {
-  const { cartProducts, handleQtyChange, refreshImagesUrls, removeFromCart } =
-    useCart();
+  const {
+    cartProducts,
+    handleQtyChange,
+    refreshImagesUrls,
+    removeFromCart,
+    getTotal,
+  } = useCart();
   const [state, setState] = useState({
     showCart: false,
     signing: true,
@@ -48,7 +55,7 @@ function App() {
         >
           <ListItem>
             <Typography variant="h4" component="h3">
-              Cart
+              Your Cart
             </Typography>
           </ListItem>
 
@@ -90,6 +97,15 @@ function App() {
               />
             </ListItem>
           ))}
+          <ListItem>
+            <Typography variant="h4" component="span">
+              Total
+            </Typography>
+            <Box sx={{ flexGrow: 1 }} />
+            <Typography variant="h4" component="span">
+              {formatPrice(getTotal())}
+            </Typography>
+          </ListItem>
         </List>
       </Drawer>
     </>

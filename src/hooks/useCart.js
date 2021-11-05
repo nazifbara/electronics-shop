@@ -12,6 +12,12 @@ export const CartProvider = (props) => {
     localStorage.setItem('cart', JSON.stringify(cartProducts));
   }, [cartProducts]);
 
+  const getTotal = () =>
+    cartProducts.reduce(
+      (total, product) => total + product.quantity * product.price,
+      0
+    );
+
   const refreshImagesUrls = async () => {
     const products = await getSignedItems(cartProducts, 'imageKey', 'imageUrl');
     setCartProducts(products);
@@ -61,6 +67,7 @@ export const CartProvider = (props) => {
         cartProducts,
         handleQtyChange,
         refreshImagesUrls,
+        getTotal,
       }}
       {...props}
     />
