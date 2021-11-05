@@ -12,8 +12,10 @@ export const CartProvider = (props) => {
     localStorage.setItem('cart', JSON.stringify(cartProducts));
   }, [cartProducts]);
 
-  const refreshImagesUrls = async () =>
-    await getSignedItems(cartProducts, 'imageKey', 'imageUrl');
+  const refreshImagesUrls = async () => {
+    const products = await getSignedItems(cartProducts, 'imageKey', 'imageUrl');
+    setCartProducts(products);
+  };
 
   const handleQtyChange = (product) => (e) => {
     const quantity = Number(e.target.value);
