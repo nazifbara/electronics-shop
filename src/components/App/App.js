@@ -2,7 +2,7 @@ import { Switch, Route } from 'react-router-dom';
 import { Typography, AppBar, Box, Toolbar, Container } from '@mui/material';
 
 import routes from '../../routes';
-import { Link, CartButton } from '../../components';
+import { Link, CartButton, LoginButton } from '../../components';
 
 function App() {
   return (
@@ -17,6 +17,7 @@ function App() {
                 </Link>
               </Typography>
               <Box sx={{ flexGrow: 1 }} />
+              <LoginButton>login</LoginButton>
               <Box>
                 <CartButton />
               </Box>
