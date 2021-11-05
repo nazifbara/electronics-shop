@@ -23,8 +23,24 @@ const LoginDialog = (props) => {
             <Tab label="Sign Up" />
           </Tabs>
         </Box>
+        <TabPanel value={0} activeTab={activeTab}>
+          sign in form
+        </TabPanel>
+        <TabPanel value={1} activeTab={activeTab}>
+          sign up form
+        </TabPanel>
       </Box>
     </Dialog>
+  );
+};
+
+const TabPanel = (props) => {
+  const { value, activeTab, children } = props;
+
+  return (
+    <Box sx={{ width: '100%' }}>
+      {value === activeTab && <Box sx={{ p: 2 }}>{children}</Box>}
+    </Box>
   );
 };
 
