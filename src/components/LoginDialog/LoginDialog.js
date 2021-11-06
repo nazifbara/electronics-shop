@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Auth } from 'aws-amplify';
 import {
   Dialog,
   DialogTitle,
@@ -17,6 +18,21 @@ const LoginDialog = (props) => {
   const [forms, setForms] = useState(INITIAL_FORMS_STATE);
 
   const handleTabChange = (e, value) => setActiveTab(value);
+  const signUp = (formData) => async (e) => {
+    e.preventDefault();
+
+    const { email, password, name } = formData;
+    try {
+      await Auth.signUp({
+        password,
+        username: email,
+        attributes: { name },
+      });
+      console.log('sign up success!');
+    } catch (error) {
+      console.error('error signing up...', error);
+    }
+  };
   const updateFormState = (type) => (e) => {
     const {
       target: { name, value },
@@ -46,6 +62,7 @@ const LoginDialog = (props) => {
           <SignUpForm
             updateFormState={updateFormState('signUp')}
             state={forms.signUp}
+            signUp={signUp}
           />
         </TabPanel>
       </Box>
@@ -55,7 +72,7 @@ const LoginDialog = (props) => {
 
 const INITIAL_FORMS_STATE = {
   signUp: {
-    username: '',
+    name: '',
     email: '',
     password: '',
   },
@@ -64,16 +81,18 @@ const INITIAL_FORMS_STATE = {
 const SignUpForm = (props) => {
   const {
     updateFormState,
-    state: { username, email, password },
+    signUp,
+    state: { name, email, password },
   } = props;
+
   return (
     <form>
       <TextField
         fullWidth
-        value={username}
+        value={name}
         onChange={updateFormState}
-        name="username"
-        label="Username"
+        name="name"
+        label="Full Name"
         margin="normal"
       />
       <TextField
@@ -94,7 +113,7 @@ const SignUpForm = (props) => {
         label="Password"
         margin="normal"
       />
-      <Button variant="contained" size="medium">
+      <Button onClick={signUp(props.state)} variant="contained" size="medium">
         sign up
       </Button>
     </form>
