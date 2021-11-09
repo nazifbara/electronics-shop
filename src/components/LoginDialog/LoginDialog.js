@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Auth } from 'aws-amplify';
 import {
+  Alert,
   Dialog,
   DialogTitle,
   IconButton,
@@ -15,13 +16,12 @@ import { Close } from '@mui/icons-material';
 const LoginDialog = (props) => {
   const { onClose, open } = props;
   const [activeTab, setActiveTab] = useState(0);
+  const [confirmMode, setConfirmMode] = useState(false);
   const [forms, setForms] = useState(INITIAL_FORMS_STATE);
 
   const handleTabChange = (e, value) => setActiveTab(value);
-  const signUp = (formData) => async (e) => {
-    e.preventDefault();
-
-    const { email, password, name } = formData;
+  const signUp = async (e) => {
+    const { email, password, name } = forms.signUp;
     try {
       await Auth.signUp({
         password,
@@ -29,10 +29,24 @@ const LoginDialog = (props) => {
         attributes: { name },
       });
       console.log('sign up success!');
+      setConfirmMode(true);
     } catch (error) {
       console.error('error signing up...', error);
     }
   };
+  async function confirmSignUp() {
+    const {
+      signUp: { email },
+      confirmation: { code },
+    } = forms;
+
+    try {
+      await Auth.confirmSignUp(email, code);
+      setActiveTab(0);
+    } catch (err) {
+      console.error('error signing up..', err);
+    }
+  }
   const updateFormState = (type) => (e) => {
     const {
       target: { name, value },
@@ -61,8 +75,11 @@ const LoginDialog = (props) => {
         <TabPanel value={1} activeTab={activeTab}>
           <SignUpForm
             updateFormState={updateFormState('signUp')}
-            state={forms.signUp}
+            updateCode={updateFormState('confirmation')}
+            confirmMode={confirmMode}
+            fieldsValues={{ ...forms.signUp, ...forms.confirmation }}
             signUp={signUp}
+            confirmSignUp={confirmSignUp}
           />
         </TabPanel>
       </Box>
@@ -76,47 +93,77 @@ const INITIAL_FORMS_STATE = {
     email: '',
     password: '',
   },
+  confirmation: {
+    code: '',
+  },
 };
 
 const SignUpForm = (props) => {
   const {
     updateFormState,
+    updateCode,
     signUp,
-    state: { name, email, password },
+    confirmSignUp,
+    confirmMode,
+    fieldsValues: { name, email, password, code },
   } = props;
 
   return (
-    <form>
-      <TextField
-        fullWidth
-        value={name}
-        onChange={updateFormState}
-        name="name"
-        label="Full Name"
-        margin="normal"
-      />
-      <TextField
-        fullWidth
-        value={email}
-        onChange={updateFormState}
-        name="email"
-        type="email"
-        label="E-mail"
-        margin="normal"
-      />
-      <TextField
-        fullWidth
-        value={password}
-        onChange={updateFormState}
-        name="password"
-        type="password"
-        label="Password"
-        margin="normal"
-      />
-      <Button onClick={signUp(props.state)} variant="contained" size="medium">
-        sign up
-      </Button>
-    </form>
+    <>
+      {!confirmMode && (
+        <form>
+          <TextField
+            fullWidth
+            value={name}
+            onChange={updateFormState}
+            name="name"
+            label="Full Name"
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            value={email}
+            onChange={updateFormState}
+            name="email"
+            type="email"
+            label="E-mail"
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            value={password}
+            onChange={updateFormState}
+            name="password"
+            type="password"
+            label="Password"
+            margin="normal"
+          />
+          <Button onClick={signUp} variant="contained" size="medium">
+            sign up
+          </Button>
+        </form>
+      )}
+
+      {confirmMode && (
+        <form>
+          <Alert severity="info">
+            Please check your e-mail. We've sent you a confirmation code.
+          </Alert>
+
+          <TextField
+            fullWidth
+            value={code}
+            onChange={updateCode}
+            name="code"
+            label="Confirmation Code"
+            margin="normal"
+          />
+          <Button onClick={confirmSignUp} variant="contained" size="medium">
+            Confirm
+          </Button>
+        </form>
+      )}
+    </>
   );
 };
 
