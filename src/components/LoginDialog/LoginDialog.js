@@ -20,6 +20,17 @@ const LoginDialog = (props) => {
   const [forms, setForms] = useState(INITIAL_FORMS_STATE);
 
   const handleTabChange = (e, value) => setActiveTab(value);
+  const signIn = async (e) => {
+    const { email, password } = forms.signIn;
+    try {
+      const user = await Auth.signIn(email, password);
+      const userInfo = { email: user.username, ...user.attributes };
+      console.info('Sign-in succes: ', userInfo);
+      onClose();
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const signUp = async (e) => {
     const { email, password, name } = forms.signUp;
     try {
@@ -76,7 +87,11 @@ const LoginDialog = (props) => {
           </Tabs>
         </Box>
         <TabPanel value={0} activeTab={activeTab}>
-          sign in form
+          <SignInForm
+            updateFormState={updateFormState('signIn')}
+            fieldsValues={{ ...forms.signIn }}
+            signIn={signIn}
+          />
         </TabPanel>
         <TabPanel value={1} activeTab={activeTab}>
           <SignUpForm
@@ -94,6 +109,10 @@ const LoginDialog = (props) => {
 };
 
 const INITIAL_FORMS_STATE = {
+  signIn: {
+    email: '',
+    password: '',
+  },
   signUp: {
     name: '',
     email: '',
@@ -102,6 +121,40 @@ const INITIAL_FORMS_STATE = {
   confirmation: {
     code: '',
   },
+};
+
+const SignInForm = (props) => {
+  const {
+    updateFormState,
+    signIn,
+    fieldsValues: { email, password },
+  } = props;
+
+  return (
+    <form>
+      <TextField
+        fullWidth
+        value={email}
+        onChange={updateFormState}
+        name="email"
+        type="email"
+        label="E-mail"
+        margin="normal"
+      />
+      <TextField
+        fullWidth
+        value={password}
+        onChange={updateFormState}
+        name="password"
+        type="password"
+        label="Password"
+        margin="normal"
+      />
+      <Button onClick={signIn} variant="contained" size="medium">
+        sign in
+      </Button>
+    </form>
+  );
 };
 
 const SignUpForm = (props) => {
