@@ -43,6 +43,12 @@ const LoginDialog = (props) => {
     try {
       await Auth.confirmSignUp(email, code);
       setActiveTab(0);
+      setConfirmMode(false);
+      setForms((s) => ({
+        ...s,
+        signUp: { ...INITIAL_FORMS_STATE.signUp },
+        confirmation: { ...INITIAL_FORMS_STATE.confirmation },
+      }));
     } catch (err) {
       console.error('error signing up..', err);
     }
