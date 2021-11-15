@@ -10,22 +10,47 @@ import {
   Box,
   TextField,
   Button,
+  Link,
 } from '@mui/material';
-import { Close } from '@mui/icons-material';
+import { Close, ArrowBack } from '@mui/icons-material';
 
 const LoginDialog = (props) => {
   const { onClose, open } = props;
   const [activeTab, setActiveTab] = useState(0);
   const [confirmMode, setConfirmMode] = useState(false);
+  const [recoveryMode, setRecoveryMode] = useState(null);
   const [forms, setForms] = useState(INITIAL_FORMS_STATE);
 
   const handleTabChange = (e, value) => setActiveTab(value);
+  const forgotPassword = async () => {
+    const { email } = forms.signIn;
+
+    try {
+      await Auth.forgotPassword(email);
+      console.info('forgotPassword success');
+      setRecoveryMode('confirm');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const forgotPasswordSubmit = async () => {
+    const { email } = forms.signIn;
+    const { code, newPassword } = forms.recovery;
+    console.log(email);
+    try {
+      await Auth.forgotPasswordSubmit(email, code, newPassword);
+      console.info('forgotPasswordSubmit success');
+      setRecoveryMode(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const signIn = async (e) => {
     const { email, password } = forms.signIn;
     try {
       const user = await Auth.signIn(email, password);
       const userInfo = { email: user.username, ...user.attributes };
-      console.info('Sign-in succes: ', userInfo);
+      console.info('Sign-in success: ', userInfo);
       onClose();
     } catch (error) {
       console.error(error);
@@ -89,8 +114,13 @@ const LoginDialog = (props) => {
         <TabPanel value={0} activeTab={activeTab}>
           <SignInForm
             updateFormState={updateFormState('signIn')}
-            fieldsValues={{ ...forms.signIn }}
+            updateRecovery={updateFormState('recovery')}
+            recoveryMode={recoveryMode}
+            setRecoveryMode={setRecoveryMode}
+            fieldsValues={{ ...forms.signIn, ...forms.recovery }}
             signIn={signIn}
+            forgotPassword={forgotPassword}
+            forgotPasswordSubmit={forgotPasswordSubmit}
           />
         </TabPanel>
         <TabPanel value={1} activeTab={activeTab}>
@@ -121,39 +151,127 @@ const INITIAL_FORMS_STATE = {
   confirmation: {
     code: '',
   },
+  recovery: {
+    code: '',
+    newPassword: '',
+  },
 };
 
 const SignInForm = (props) => {
   const {
     updateFormState,
+    updateRecovery,
     signIn,
-    fieldsValues: { email, password },
+    forgotPassword,
+    forgotPasswordSubmit,
+    recoveryMode,
+    setRecoveryMode,
+    fieldsValues: { email, password, code, newPassword },
   } = props;
 
   return (
-    <form>
-      <TextField
-        fullWidth
-        value={email}
-        onChange={updateFormState}
-        name="email"
-        type="email"
-        label="E-mail"
-        margin="normal"
-      />
-      <TextField
-        fullWidth
-        value={password}
-        onChange={updateFormState}
-        name="password"
-        type="password"
-        label="Password"
-        margin="normal"
-      />
-      <Button onClick={signIn} variant="contained" size="medium">
-        sign in
-      </Button>
-    </form>
+    <>
+      {!recoveryMode && (
+        <form>
+          <TextField
+            fullWidth
+            value={email}
+            onChange={updateFormState}
+            name="email"
+            type="email"
+            label="E-mail"
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            value={password}
+            onChange={updateFormState}
+            name="password"
+            type="password"
+            label="Password"
+            margin="normal"
+          />
+          <Button
+            sx={{ mb: 3 }}
+            onClick={signIn}
+            variant="contained"
+            size="medium"
+          >
+            sign in
+          </Button>
+          <div>
+            <Link onClick={() => setRecoveryMode('forgot')} href="#">
+              Forgot password?
+            </Link>
+          </div>
+        </form>
+      )}
+
+      {recoveryMode && (
+        <form>
+          <TextField
+            fullWidth
+            value={email}
+            disabled={recoveryMode === 'confirm'}
+            onChange={updateFormState}
+            name="email"
+            label="E-mail"
+            type="email"
+            margin="normal"
+          />
+          {recoveryMode === 'confirm' && (
+            <>
+              <TextField
+                fullWidth
+                value={code}
+                onChange={updateRecovery}
+                name="code"
+                label="Confirmation Code"
+                margin="normal"
+              />
+              <TextField
+                fullWidth
+                value={newPassword}
+                onChange={updateRecovery}
+                name="newPassword"
+                type="password"
+                label="New Password"
+                margin="normal"
+              />
+            </>
+          )}
+          {recoveryMode === 'forgot' && (
+            <Button
+              sx={{ mb: 3 }}
+              onClick={forgotPassword}
+              variant="contained"
+              size="medium"
+            >
+              reset password
+            </Button>
+          )}
+
+          {recoveryMode === 'confirm' && (
+            <Button
+              sx={{ mb: 3 }}
+              onClick={forgotPasswordSubmit}
+              variant="contained"
+              size="medium"
+            >
+              confirm new password
+            </Button>
+          )}
+          <div>
+            <Button
+              startIcon={<ArrowBack />}
+              onClick={() => setRecoveryMode(null)}
+            >
+              go back
+            </Button>
+          </div>
+        </form>
+      )}
+    </>
   );
 };
 
