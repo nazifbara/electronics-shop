@@ -36,7 +36,7 @@ const LoginDialog = (props) => {
   const forgotPasswordSubmit = async () => {
     const { email } = forms.signIn;
     const { code, newPassword } = forms.recovery;
-    console.log(email);
+
     try {
       await Auth.forgotPasswordSubmit(email, code, newPassword);
       console.info('forgotPasswordSubmit success');
@@ -58,16 +58,23 @@ const LoginDialog = (props) => {
   };
   const signUp = async (e) => {
     const { email, password, name } = forms.signUp;
+    const validationError = validate(forms.signUp);
+
+    if (validationError) {
+      setForms((s) => ({ ...s, signUp: { ...s.signUp, validationError } }));
+      return;
+    }
+
     try {
       await Auth.signUp({
         password,
         username: email,
         attributes: { name },
       });
-      console.log('sign up success!');
+      console.info('sign up success!');
       setConfirmMode(true);
     } catch (error) {
-      console.error('error signing up...', error);
+      console.error('error signing up...', error.name);
     }
   };
   async function confirmSignUp() {
@@ -128,6 +135,7 @@ const LoginDialog = (props) => {
             updateFormState={updateFormState('signUp')}
             updateCode={updateFormState('confirmation')}
             confirmMode={confirmMode}
+            validationError={forms.signUp.validationError}
             fieldsValues={{ ...forms.signUp, ...forms.confirmation }}
             signUp={signUp}
             confirmSignUp={confirmSignUp}
@@ -136,6 +144,36 @@ const LoginDialog = (props) => {
       </Box>
     </Dialog>
   );
+};
+
+const validate = (data) => {
+  const keys = Object.keys(data);
+  const error = {};
+
+  keys.forEach((key) => {
+    switch (key) {
+      case 'email':
+        const mailFormat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+        if (!data[key].match(mailFormat)) {
+          error[key] = 'invalid email address';
+        }
+        break;
+      case 'name':
+        if (data[key].length < 3) {
+          error[key] = 'name must contain at least 3 characters';
+        }
+        break;
+      case 'password':
+        if (data[key].length < 8) {
+          error[key] = 'password must be 8 characters long';
+        }
+        break;
+      default:
+        break;
+    }
+  });
+
+  return Object.keys(error).length === 0 ? null : error;
 };
 
 const INITIAL_FORMS_STATE = {
@@ -147,6 +185,7 @@ const INITIAL_FORMS_STATE = {
     name: '',
     email: '',
     password: '',
+    validationError: null,
   },
   confirmation: {
     code: '',
@@ -282,6 +321,7 @@ const SignUpForm = (props) => {
     signUp,
     confirmSignUp,
     confirmMode,
+    validationError,
     fieldsValues: { name, email, password, code },
   } = props;
 
@@ -291,6 +331,8 @@ const SignUpForm = (props) => {
         <form>
           <TextField
             fullWidth
+            error={validationError && Boolean(validationError.name)}
+            helperText={validationError && validationError.name}
             value={name}
             onChange={updateFormState}
             name="name"
@@ -299,6 +341,8 @@ const SignUpForm = (props) => {
           />
           <TextField
             fullWidth
+            error={validationError && Boolean(validationError.email)}
+            helperText={validationError && validationError.email}
             value={email}
             onChange={updateFormState}
             name="email"
@@ -308,6 +352,8 @@ const SignUpForm = (props) => {
           />
           <TextField
             fullWidth
+            error={validationError && Boolean(validationError.password)}
+            helperText={validationError && validationError.password}
             value={password}
             onChange={updateFormState}
             name="password"
