@@ -36,6 +36,13 @@ const LoginDialog = (props) => {
   const forgotPasswordSubmit = async () => {
     const { email } = forms.signIn;
     const { code, newPassword } = forms.recovery;
+    const validationError = validate({ password: newPassword, code });
+
+    if (validationError) {
+      console.log(validationError);
+      setForms((s) => ({ ...s, recovery: { ...s.recovery, validationError } }));
+      return;
+    }
 
     try {
       await Auth.forgotPasswordSubmit(email, code, newPassword);
@@ -124,6 +131,7 @@ const LoginDialog = (props) => {
             updateRecovery={updateFormState('recovery')}
             recoveryMode={recoveryMode}
             setRecoveryMode={setRecoveryMode}
+            validationError={forms.recovery.validationError}
             fieldsValues={{ ...forms.signIn, ...forms.recovery }}
             signIn={signIn}
             forgotPassword={forgotPassword}
@@ -152,6 +160,11 @@ const validate = (data) => {
 
   keys.forEach((key) => {
     switch (key) {
+      case 'code':
+        if (isNaN(Number(data[key])) || data[key].length !== 6) {
+          error[key] = 'confirmation must be a 6-digit number';
+        }
+        break;
       case 'email':
         const mailFormat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
         if (!data[key].match(mailFormat)) {
@@ -165,7 +178,7 @@ const validate = (data) => {
         break;
       case 'password':
         if (data[key].length < 8) {
-          error[key] = 'password must be 8 characters long';
+          error[key] = 'password must be at least 8 characters long';
         }
         break;
       default:
@@ -193,6 +206,7 @@ const INITIAL_FORMS_STATE = {
   recovery: {
     code: '',
     newPassword: '',
+    validationError: null,
   },
 };
 
@@ -205,6 +219,7 @@ const SignInForm = (props) => {
     forgotPasswordSubmit,
     recoveryMode,
     setRecoveryMode,
+    validationError,
     fieldsValues: { email, password, code, newPassword },
   } = props;
 
@@ -262,6 +277,8 @@ const SignInForm = (props) => {
             <>
               <TextField
                 fullWidth
+                error={validationError && Boolean(validationError.code)}
+                helperText={validationError && validationError.code}
                 value={code}
                 onChange={updateRecovery}
                 name="code"
@@ -270,6 +287,8 @@ const SignInForm = (props) => {
               />
               <TextField
                 fullWidth
+                error={validationError && Boolean(validationError.password)}
+                helperText={validationError && validationError.password}
                 value={newPassword}
                 onChange={updateRecovery}
                 name="newPassword"
