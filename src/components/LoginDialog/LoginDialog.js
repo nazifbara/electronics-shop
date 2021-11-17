@@ -14,8 +14,12 @@ import {
 } from '@mui/material';
 import { Close, ArrowBack } from '@mui/icons-material';
 
+import { validateFormSubmit } from '../../utils';
+import { useSignUp } from '../../hooks/mutations';
+
 const LoginDialog = (props) => {
   const { onClose, open } = props;
+  const { mutate: signUp } = useSignUp();
   const [activeTab, setActiveTab] = useState(0);
   const [confirmMode, setConfirmMode] = useState(false);
   const [recoveryMode, setRecoveryMode] = useState(null);
@@ -36,10 +40,9 @@ const LoginDialog = (props) => {
   const forgotPasswordSubmit = async () => {
     const { email } = forms.signIn;
     const { code, newPassword } = forms.recovery;
-    const validationError = validate({ password: newPassword, code });
+    const validationError = validateFormSubmit({ password: newPassword, code });
 
     if (validationError) {
-      console.log(validationError);
       setForms((s) => ({ ...s, recovery: { ...s.recovery, validationError } }));
       return;
     }
@@ -63,9 +66,8 @@ const LoginDialog = (props) => {
       console.error(error);
     }
   };
-  const signUp = async (e) => {
-    const { email, password, name } = forms.signUp;
-    const validationError = validate(forms.signUp);
+  const handleSignUp = async () => {
+    const validationError = validateFormSubmit(forms.signUp);
 
     if (validationError) {
       setForms((s) => ({ ...s, signUp: { ...s.signUp, validationError } }));
@@ -73,11 +75,7 @@ const LoginDialog = (props) => {
     }
 
     try {
-      await Auth.signUp({
-        password,
-        username: email,
-        attributes: { name },
-      });
+      await signUp(forms.signUp);
       console.info('sign up success!');
       setConfirmMode(true);
     } catch (error) {
@@ -145,48 +143,13 @@ const LoginDialog = (props) => {
             confirmMode={confirmMode}
             validationError={forms.signUp.validationError}
             fieldsValues={{ ...forms.signUp, ...forms.confirmation }}
-            signUp={signUp}
+            onSignUp={handleSignUp}
             confirmSignUp={confirmSignUp}
           />
         </TabPanel>
       </Box>
     </Dialog>
   );
-};
-
-const validate = (data) => {
-  const keys = Object.keys(data);
-  const error = {};
-
-  keys.forEach((key) => {
-    switch (key) {
-      case 'code':
-        if (isNaN(Number(data[key])) || data[key].length !== 6) {
-          error[key] = 'confirmation must be a 6-digit number';
-        }
-        break;
-      case 'email':
-        const mailFormat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-        if (!data[key].match(mailFormat)) {
-          error[key] = 'invalid email address';
-        }
-        break;
-      case 'name':
-        if (data[key].length < 3) {
-          error[key] = 'name must contain at least 3 characters';
-        }
-        break;
-      case 'password':
-        if (data[key].length < 8) {
-          error[key] = 'password must be at least 8 characters long';
-        }
-        break;
-      default:
-        break;
-    }
-  });
-
-  return Object.keys(error).length === 0 ? null : error;
 };
 
 const INITIAL_FORMS_STATE = {
@@ -337,7 +300,7 @@ const SignUpForm = (props) => {
   const {
     updateFormState,
     updateCode,
-    signUp,
+    onSignUp,
     confirmSignUp,
     confirmMode,
     validationError,
@@ -380,7 +343,7 @@ const SignUpForm = (props) => {
             label="Password"
             margin="normal"
           />
-          <Button onClick={signUp} variant="contained" size="medium">
+          <Button onClick={onSignUp} variant="contained" size="medium">
             sign up
           </Button>
         </form>
