@@ -1,11 +1,11 @@
 import { Auth } from 'aws-amplify';
 
-export const signUp = async (formData) => {
-  const { email, password, name } = formData;
+export const signIn = async ({ email, password }) =>
+  Auth.signIn(email, password);
 
-  return Auth.signUp({
+export const signUp = async ({ email, password, name }) =>
+  Auth.signUp({
     password,
     username: email,
     attributes: { name },
   });
-};

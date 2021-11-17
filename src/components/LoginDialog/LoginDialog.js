@@ -15,11 +15,12 @@ import {
 import { Close, ArrowBack } from '@mui/icons-material';
 
 import { validateFormSubmit } from '../../utils';
-import { useSignUp } from '../../hooks/mutations';
+import { useSignUp, useSignIn } from '../../hooks/mutations';
 
 const LoginDialog = (props) => {
   const { onClose, open } = props;
   const { mutate: signUp } = useSignUp();
+  const { mutate: signIn } = useSignIn();
   const [activeTab, setActiveTab] = useState(0);
   const [confirmMode, setConfirmMode] = useState(false);
   const [recoveryMode, setRecoveryMode] = useState(null);
@@ -55,12 +56,9 @@ const LoginDialog = (props) => {
       console.error(error);
     }
   };
-  const signIn = async (e) => {
-    const { email, password } = forms.signIn;
+  const handleSignIn = async (e) => {
     try {
-      const user = await Auth.signIn(email, password);
-      const userInfo = { email: user.username, ...user.attributes };
-      console.info('Sign-in success: ', userInfo);
+      await signIn(forms.signIn);
       onClose();
     } catch (error) {
       console.error(error);
@@ -131,7 +129,7 @@ const LoginDialog = (props) => {
             setRecoveryMode={setRecoveryMode}
             validationError={forms.recovery.validationError}
             fieldsValues={{ ...forms.signIn, ...forms.recovery }}
-            signIn={signIn}
+            onSignIn={handleSignIn}
             forgotPassword={forgotPassword}
             forgotPasswordSubmit={forgotPasswordSubmit}
           />
@@ -177,7 +175,7 @@ const SignInForm = (props) => {
   const {
     updateFormState,
     updateRecovery,
-    signIn,
+    onSignIn,
     forgotPassword,
     forgotPasswordSubmit,
     recoveryMode,
@@ -210,7 +208,7 @@ const SignInForm = (props) => {
           />
           <Button
             sx={{ mb: 3 }}
-            onClick={signIn}
+            onClick={onSignIn}
             variant="contained"
             size="medium"
           >

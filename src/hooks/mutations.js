@@ -1,5 +1,7 @@
 import { useMutation } from 'react-query';
 
-import { signUp } from '../api/mutations';
+import { signUp, signIn } from '../api/mutations';
+
+export const useSignIn = () => useMutation(signIn);
 
 export const useSignUp = () => useMutation(signUp);
