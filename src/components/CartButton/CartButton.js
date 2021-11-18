@@ -10,7 +10,7 @@ import {
   CircularProgress,
   TextField,
 } from '@mui/material';
-import { Delete, ShoppingCart } from '@mui/icons-material';
+import { Delete, ShoppingCart, Close } from '@mui/icons-material';
 
 import { useCart } from '../../hooks/useCart';
 import { ImageBox } from '../../components';
@@ -54,7 +54,10 @@ function App() {
           }}
         >
           <ListItem>
-            <Typography variant="h4" component="h3">
+            <Typography gutterBottom variant="h4" component="h3">
+              <IconButton onClick={toggleCart(false)} size="medium">
+                <Close fontSize="medium" />
+              </IconButton>
               Your Cart
             </Typography>
           </ListItem>
