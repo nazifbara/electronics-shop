@@ -9,11 +9,12 @@ import {
   ListItemText,
   CircularProgress,
   TextField,
+  Button,
 } from '@mui/material';
 import { Delete, ShoppingCart, Close } from '@mui/icons-material';
 
 import { useCart } from '../../hooks/useCart';
-import { ImageBox } from '../../components';
+import { ImageBox, Link } from '../../components';
 import { formatPrice } from '../../utils';
 import { Box } from '@mui/system';
 
@@ -108,6 +109,18 @@ function App() {
             <Typography variant="h4" component="span">
               {formatPrice(getTotal())}
             </Typography>
+          </ListItem>
+          <ListItem>
+            <Button
+              onClick={toggleCart(false)}
+              fullWidth
+              variant="contained"
+              size="large"
+            >
+              <Link underline="none" color="inherit" to="/checkout">
+                go to ckeckout
+              </Link>
+            </Button>
           </ListItem>
         </List>
       </Drawer>
