@@ -30,9 +30,7 @@ const ProductView = () => {
   } = useProduct(productID);
   const theme = useTheme();
   const mdMedia = useMediaQuery(theme.breakpoints.up('md'));
-  const { cartProducts, isInCart, addToCart, removeFromCart } = useCart();
-
-  console.log(cartProducts);
+  const { isInCart, addToCart, removeFromCart } = useCart();
 
   const handleQtyChange = (e) => {
     const qty = Number(e.target.value);
