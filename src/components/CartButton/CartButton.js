@@ -85,25 +85,30 @@ function App() {
               <ListItemText
                 primary={p.name}
                 secondary={
-                  <TextField
-                    onChange={handleQtyChange(p)}
-                    value={p.quantity}
-                    margin="normal"
-                    size="small"
-                    label="Qty"
-                    type="number"
-                    sx={{ width: 80 }}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
+                  <Box>
+                    <TextField
+                      onChange={handleQtyChange(p)}
+                      value={p.quantity}
+                      margin="normal"
+                      size="small"
+                      label="Qty"
+                      type="number"
+                      sx={{ width: 80, mr: 1 }}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                    <p style={{ fontWeight: 'bold' }}>
+                      Total Price: {formatPrice(p.quantity * p.price)}
+                    </p>
+                  </Box>
                 }
               />
             </ListItem>
           ))}
           <ListItem>
             <Typography variant="h4" component="span">
-              Total
+              Total:
             </Typography>
             <Box sx={{ flexGrow: 1 }} />
             <Typography variant="h4" component="span">
