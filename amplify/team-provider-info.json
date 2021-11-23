@@ -15,6 +15,16 @@
       "auth": {
         "electronicsshopc4a65aa5": {},
         "electronicsshop8fbca850": {}
+      },
+      "function": {
+        "createOrderES": {
+          "deploymentBucketName": "amplify-electronicsshop-dev-152021-deployment",
+          "s3Key": "amplify-builds/createOrderES-69777463474a39526e39-build.zip"
+        },
+        "processPaymentES": {
+          "deploymentBucketName": "amplify-electronicsshop-dev-152021-deployment",
+          "s3Key": "amplify-builds/processPaymentES-742b4751507a55567172-build.zip"
+        }
       }
     }
   }

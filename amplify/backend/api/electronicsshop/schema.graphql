@@ -1,17 +1,72 @@
-type Product @model @auth(rules: [{allow: public}]) @key(name: "byCategory", fields: ["categoryID"]) {
+type Order @model @auth(rules: [{ allow: owner }, { allow: private }]) {
+  id: ID!
+  date: AWSDateTime
+  city: String
+  country: String
+  address: String
+  zipCode: String
+  user: AWSEmail
+  total: Int
+  OrderProducts: [OrderProduct] @connection(keyName: "byOrder", fields: ["id"])
+}
+
+type Product
+  @model
+  @auth(rules: [{ allow: public }])
+  @key(name: "byCategory", fields: ["categoryID"]) {
   id: ID!
   name: String!
   description: String!
   price: Int
   imageKey: String
   categoryID: ID
+  orders: [OrderProduct] @connection(keyName: "byProduct", fields: ["id"])
 }
 
-type Category @model @auth(rules: [{allow: public}]) {
+type Category @model @auth(rules: [{ allow: public }]) {
   id: ID!
   name: String!
   slug: String!
   imageKey: String!
   Products: [Product] @connection(keyName: "byCategory", fields: ["id"])
 }
- 
+
+type OrderProduct
+  @model(queries: null)
+  @key(name: "byOrder", fields: ["orderID", "productID"])
+  @key(name: "byProduct", fields: ["productID", "orderID"])
+  @auth(rules: [{ allow: owner }, { allow: private }, { allow: public }]) {
+  id: ID!
+  orderID: ID!
+  productID: ID!
+  order: Order! @connection(fields: ["orderID"])
+  product: Product! @connection(fields: ["productID"])
+}
+
+type Mutation {
+  processOrder(input: ProcessOrderInput!): OrderStatus
+    @function(name: "processPaymentES-${env}")
+    @function(name: "createOrderES-${env}")
+}
+
+enum OrderStatus {
+  SUCCESS
+  FAILED
+}
+
+input CartItem {
+  id: ID!
+  name: String
+  price: Int
+  quantity: Int
+}
+
+input ProcessOrderInput {
+  cart: [CartItem]
+  total: Int!
+  token: String!
+  country: String
+  city: String
+  zipCode: String
+  address: String
+}

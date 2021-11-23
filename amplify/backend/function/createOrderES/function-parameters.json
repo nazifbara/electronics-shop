@@ -1,0 +1,13 @@
+{
+  "lambdaLayers": [],
+  "permissions": {
+    "storage": {
+      "Order:@model(appsync)": [
+        "create"
+      ],
+      "OrderProduct:@model(appsync)": [
+        "create"
+      ]
+    }
+  }
+}

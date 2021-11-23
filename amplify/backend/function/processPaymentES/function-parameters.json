@@ -1,0 +1,13 @@
+{
+  "lambdaLayers": [],
+  "permissions": {
+    "auth": {
+      "electronicsshop8fbca850": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  }
+}
