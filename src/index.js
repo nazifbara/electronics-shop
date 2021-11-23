@@ -4,10 +4,15 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import Amplify, { AuthModeStrategyType } from 'aws-amplify';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import dotenv from 'dotenv';
+
+import './stripe.css';
 
 import { App } from './components';
 import { CartProvider } from './hooks/useCart';
 import AWSConfig from './aws-exports';
+
+dotenv.config();
 
 Amplify.configure({
   ...AWSConfig,

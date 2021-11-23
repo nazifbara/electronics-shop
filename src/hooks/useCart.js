@@ -12,6 +12,8 @@ export const CartProvider = (props) => {
     localStorage.setItem('cart', JSON.stringify(cartProducts));
   }, [cartProducts]);
 
+  const clearCart = () => setCartProducts([]);
+
   const getTotal = () =>
     cartProducts.reduce(
       (total, product) => total + product.quantity * product.price,
@@ -61,6 +63,7 @@ export const CartProvider = (props) => {
   return (
     <CartContext.Provider
       value={{
+        clearCart,
         addToCart,
         removeFromCart,
         isInCart,

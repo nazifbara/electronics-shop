@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Stack,
   Typography,
@@ -12,8 +13,19 @@ import {
   TextField,
   useTheme,
   Button,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
+import {
+  Elements,
+  CardElement,
+  ElementsConsumer,
+} from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { API, graphqlOperation } from 'aws-amplify';
+import { useHistory } from 'react-router-dom';
 
+import { processOrder } from '../../graphql/mutations';
 import { ContentBox, ImageBox } from '../../components';
 import { useCart } from '../../hooks/useCart';
 import { formatPrice } from '../../utils';
@@ -21,6 +33,9 @@ import { formatPrice } from '../../utils';
 const CheckoutView = () => {
   const { cartProducts, getTotal } = useCart();
   const theme = useTheme();
+  const [stripePromise] = useState(() =>
+    loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY)
+  );
 
   return (
     <ContentBox>
@@ -78,33 +93,129 @@ const CheckoutView = () => {
           <Typography gutterBottom variant="h4" component="h3">
             Payment Info
           </Typography>
-          <form>
-            <TextField
-              fullWidth
-              name="country"
-              label="Country"
-              margin="dense"
-            />
-            <TextField fullWidth name="city" label="City" margin="normal" />
-            <TextField
-              fullWidth
-              name="zipCode"
-              label="ZIP Code"
-              margin="dense"
-            />
-            <TextField
-              fullWidth
-              name="address"
-              label="Address"
-              margin="dense"
-            />
-            <Button fullWidth variant="contained" size="medium">
-              checkout
-            </Button>
-          </form>
+          <Elements stripe={stripePromise}>
+            <InjectedPaymentForm />
+          </Elements>
         </Box>
       </Stack>
     </ContentBox>
+  );
+};
+
+const PaymentForm = ({ stripe, elements }) => {
+  const history = useHistory();
+  const { clearCart, getTotal, cartProducts } = useCart();
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    country: '',
+    city: '',
+    zipCode: '',
+    address: '',
+  });
+
+  const handleSubmit = async (e) => {
+    const { address, country } = form;
+    e.preventDefault();
+    if (!stripe && !elements && !address && !country) {
+      return;
+    }
+    setLoading(true);
+    try {
+      await processPayment();
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+      return;
+    }
+    console.info('payment done');
+    setLoading(false);
+    clearCart();
+    history.push('/orders');
+  };
+
+  const handleValueChange = (e) => {
+    const {
+      target: { name, value },
+    } = e;
+    setForm((s) => ({ ...s, [name]: value }));
+  };
+
+  const processPayment = async () => {
+    const card = elements.getElement(CardElement);
+    const result = await stripe.createToken(card);
+
+    await API.graphql({
+      ...graphqlOperation(processOrder, {
+        input: {
+          cart: cartProducts.map((p) => {
+            const { name, price, quantity, id } = p;
+            return { name, price, quantity, id };
+          }),
+          token: result.token.id,
+          total: getTotal(),
+          ...form,
+        },
+      }),
+    });
+    clearCart();
+  };
+  return (
+    <form>
+      <TextField
+        fullWidth
+        value={form.country}
+        onChange={handleValueChange}
+        name="country"
+        label="Country"
+        margin="dense"
+      />
+      <TextField
+        fullWidth
+        value={form.city}
+        onChange={handleValueChange}
+        name="city"
+        label="City"
+        margin="normal"
+      />
+      <TextField
+        fullWidth
+        value={form.zipCode}
+        onChange={handleValueChange}
+        name="zipCode"
+        label="ZIP Code"
+        margin="dense"
+      />
+      <TextField
+        fullWidth
+        value={form.address}
+        onChange={handleValueChange}
+        name="address"
+        label="Address"
+        margin="dense"
+      />
+      <Alert severity="info">
+        card: 4242424242424242 - 08/30 - 123 - 12345
+      </Alert>
+      <CardElement className="card-element" />
+      <Button
+        fullWidth
+        onClick={handleSubmit}
+        variant="contained"
+        size="medium"
+      >
+        {loading ? <CircularProgress color="inherit" /> : 'checkout'}
+      </Button>
+    </form>
+  );
+};
+
+const InjectedPaymentForm = () => {
+  return (
+    <ElementsConsumer>
+      {({ stripe, elements }) => (
+        <PaymentForm stripe={stripe} elements={elements} />
+      )}
+    </ElementsConsumer>
   );
 };
 
